@@ -22,7 +22,7 @@ return (
                      </Link>
                   </li>
                   <li>
-                     <Link to="/test"
+                     <Link to="/account-settings"
                         className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
                      <svg
                         className="w-6 h-6 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75"
@@ -37,7 +37,7 @@ return (
                   </li>
                </ul>
                <div className="space-y-2 w-56 pt-2 absolute bottom-0">
-                  <a href="#"
+                  <Link to="/settings"
                      className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
                      <svg
                         className="w-5 h-5 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75"
@@ -46,7 +46,7 @@ return (
                            d="m9.25 22l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.338v.674q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375t-.6.3l-.4 3.2zm2.8-6.5q1.45 0 2.475-1.025T15.55 12q0-1.45-1.025-2.475T12.05 8.5q-1.475 0-2.488 1.025T8.55 12q0 1.45 1.013 2.475T12.05 15.5" />
                      </svg>
                      <span className="ml-4">Settings</span>
-                  </a>
+                  </Link>
                   <a href="#"
                      className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
                      <svg className="w-6 h-6 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -55,7 +55,7 @@ return (
                      </svg>
                      <span className="ml-3">Logout</span>
                   </a>
-                  <a href="#"
+                  <Link to="/help"
                      className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
                      <svg
                         className="w-6 h-6 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75"
@@ -65,7 +65,7 @@ return (
                            clipRule="evenodd"></path>
                      </svg>
                      <span className="ml-3">Help</span>
-                  </a>
+                  </Link>
                </div>
             </div>
          </div>
