@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import '../App.css';
 import { AxiosInstance } from './AxiosInstance';
+import '../App.css';
+const { ipcRenderer } = window.electron;
 
 export default function AuthPages() {
   const [licenseKey, setLicenseKey] = useState<string>('');
@@ -15,10 +16,14 @@ export default function AuthPages() {
       const response = await AxiosInstance(licenseKey).post(
         `lisence/validated?lisence_key=${licenseKey}`,
       );
+      
       if (!response.data.success) {
         setError(response.data.message);
+        return setLoading(false);
       } else {
         setError('');
+        ipcRenderer.sendMessage('check-auth', true);
+        ipcRenderer.sendMessage('activate-main-apps', response.data.data);
       }
     } catch (error) {
       setError('An error occurred while validating the license key');
@@ -46,9 +51,12 @@ export default function AuthPages() {
           className={`${
             error ? 'text-red-500' : 'text-gray-500'
           } text-xs italic mt-1`}
-        >
-          {error ? error : 'Enter the valid lisence key'}
-        </div>
+          dangerouslySetInnerHTML={{
+            __html: error
+              ? `${error}. <a role="button" style="color: blue;" href="https://www.electronjs.org/docs/latest/api/window-open#native-window-example" target="_blank">need help ?</a>`
+              : 'Enter the valid license key',
+          }}
+        ></div>
       </div>
 
       <button

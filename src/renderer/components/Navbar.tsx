@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 export default function Navbar() {
   // TODO: Handle status online
-  const [isOnline, setIsOnline] = useState(true);
-
+  const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+  
   return (
     <>
       <nav className="bg-white border-b border-gray-200 fixed z-30 w-full">
