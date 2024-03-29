@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 export default function Navbar() {
   // TODO: Handle status online
-  const [isOnline, setIsOnline] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
   return (
     <>
