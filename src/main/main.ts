@@ -25,6 +25,7 @@ import MenuBuilder from './menu';
 import {
   resolveHtmlPath
 } from './util';
+import { mac } from 'address';
 
 class AppUpdater {
   constructor() {
@@ -35,7 +36,9 @@ class AppUpdater {
 }
 
 const store = new Store();
-// store.set('valid', false)
+// store.set('valid', false);
+// store.set('data', '')  
+
 
 let mainWindow: BrowserWindow | null = null;
 const authWindowSize = [500, 210]
@@ -86,9 +89,9 @@ const createWindow = async (w: number, h: number) => {
     height: h,
     icon: getAssetPath('icon.png'),
     autoHideMenuBar: true,
-    resizable: false,
+    resizable: app.isPackaged ? false : true,
     webPreferences: {
-      devTools: true,
+      devTools: app.isPackaged ? false : true,
       preload: app.isPackaged ?
         path.join(__dirname, 'preload.js') :
         path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -151,16 +154,42 @@ ipcMain.on('get-data-user', (event, args) => {
   event.reply('get-data-user', store.get('data'));
 });
 
-ipcMain.on('relaunch-app', () => {
-  app.relaunch();
-  app.exit();
+ipcMain.on('logout', async (event, args) => {
+  store.set('valid', false);
+  store.set('data', '');
+  event.reply('check-auth', false);
+  handleWindow()
 });
+
+let macs = '';
+mac(function (err, addr) {
+  macs = addr as string;
+});
+
+ipcMain.on('get-mac', (event, args) => {
+  event.reply('get-mac', macs);
+})
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow(mainWindowSize[0], mainWindowSize[1]);
+    handleWindow();
   }
 });
+
+// TODO: Handle resize to authwindow when logout
+function handleWindow() {
+  if (store.get('valid')) {
+    mainWindow?.setSize(mainWindowSize[0], mainWindowSize[1]);
+    mainWindow?.center();
+  } else {
+    mainWindow?.setSize(authWindowSize[0], authWindowSize[1]);
+    mainWindow?.center();
+  }
+}
+
+ipcMain.on('re-session', (event, args) => {
+  // TODO: Handle re-session
+}); 
 
 app
   .whenReady()
@@ -172,8 +201,7 @@ app
     }
 
     ipcMain.on('activate-main-apps', (event, args) => {
-      mainWindow?.setSize(mainWindowSize[0], mainWindowSize[1]);
-      mainWindow?.center();
+      handleWindow()
       store.set('data', JSON.stringify(args))
       event.reply('get-data-user');
     });

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+const { ipcRenderer } = window.electron;
 
 export default function Sidebar() {
 return (
@@ -47,16 +48,8 @@ return (
                      </svg>
                      <span className="ml-4">Settings</span>
                   </Link>
-                  <a href="#"
-                     className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
-                     <svg className="w-6 h-6 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path fill="currentColor"
-                           d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h7v2H5v14h7v2zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z" />
-                     </svg>
-                     <span className="ml-3">Logout</span>
-                  </a>
                   <Link to="/help"
-                     className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
+                     className="text-base w-56 text-gray-900 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
                      <svg
                         className="w-6 h-6 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75"
                         fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

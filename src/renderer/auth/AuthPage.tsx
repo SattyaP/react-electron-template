@@ -3,6 +3,7 @@ import { AxiosInstance } from './AxiosInstance';
 import '../App.css';
 const { ipcRenderer } = window.electron;
 
+// TODO: Handle callback api for validate count user used that license key
 export default function AuthPages() {
   const [licenseKey, setLicenseKey] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,7 +54,7 @@ export default function AuthPages() {
           } text-xs italic mt-1`}
           dangerouslySetInnerHTML={{
             __html: error
-              ? `${error}. <a role="button" style="color: blue;" href="https://www.electronjs.org/docs/latest/api/window-open#native-window-example" target="_blank">need help ?</a>`
+              ? `${error}. <a role="button" style="color: blue;" href="https://www.alsavdev.com/" target="_blank">need help ?</a>`
               : 'Enter the valid license key',
           }}
         ></div>

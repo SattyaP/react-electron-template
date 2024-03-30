@@ -1,8 +1,12 @@
+const { ipcRenderer } = window.electron;
+import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  ipcRenderer.sendMessage('re-session');
+
   return (
     <div className="min-h-screen w-full">
       <Navbar />
