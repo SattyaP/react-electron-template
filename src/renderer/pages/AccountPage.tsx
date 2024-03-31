@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 const { ipcRenderer } = window.electron;
-import { AxiosInstance } from '../auth/AxiosInstance';
 import Loading from '../components/Loading';
 import { Toast } from '../utils/Toast';
+import ApiModels from '../utils/ApiModels';
 
 export default function AccountPage() {
   const [data, setData] = useState<any>([]);
@@ -19,23 +19,21 @@ export default function AccountPage() {
 
   useEffect(() => {
     if (data.license_key) {
-      getStatusLicense(data.license_key);
+      _getStatusLicense(data.license_key);
     }
   }, [data.license_key]);
 
-  const getStatusLicense = async (license_key: string) => {
+  const _getStatusLicense = async (license_key: string) => {
     try {
       setIsLoading(true);
-      const response = await AxiosInstance(license_key).get(
-        `status?lisence_key=${license_key}`,
-      );
-      setStatus(response.data.data.status);
+      const response = await ApiModels.getStatusLicense(license_key) as { success: boolean, message: string, data: any };
+      setStatus(response.data.status);      
       setIsLoading(false);
     } catch (error) {
       Toast.fire({
         icon: 'error',
         title: 'Oops...',
-        text: String(error),
+        text: 'Something error with your license key',
       });
       setIsLoading(false);
     }
@@ -55,15 +53,13 @@ export default function AccountPage() {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await AxiosInstance(data.license_key).post(
-            `logout?lisence_key=${data.license_key}`,
-          );
-
-          if (!response.data.success) {
+          const response = await ApiModels.logout(data.license_key) as { success: boolean, message: string, data: any };
+          
+          if (!response.success) {
             return Toast.fire({
               icon: 'error',
               title: 'Oops...',
-              text: response.data.message,
+              text: response.message,
             });
           }
 
@@ -95,7 +91,7 @@ export default function AccountPage() {
             <div className="mb-8">
               <h5 className="font-medium mb-3">Username</h5>
               <p className="shadow rounded w-full flex h-12 items-center align-middle px-4">
-                {data && data.customer_email?.split('@')[0]}
+                {data?.customer_email?.split('@')[0]}
               </p>
             </div>
             <div className="mb-6">
@@ -105,7 +101,7 @@ export default function AccountPage() {
               </p>
               <div className="flex gap-3">
                 <p className="shadow rounded w-full justify-between flex h-12 items-center align-middle px-4">
-                  {data && data.customer_email}
+                  {data?.customer_email}
                   <span className="inline-flex items-center rounded-md bg-green-50 px-3 py-2 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                     Verified
                   </span>
@@ -119,7 +115,7 @@ export default function AccountPage() {
               </p>
               <div className="flex gap-3">
                 <div className="shadow rounded w-full justify-between flex h-12 items-center align-middle px-4">
-                  {data && data.license_key}
+                  {data?.license_key}
                   <div className="flex gap-3">
                     <span className="inline-flex items-center rounded-md bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">
                       {status}
@@ -135,7 +131,7 @@ export default function AccountPage() {
               <h5 className="font-medium mb-3">APP ID</h5>
               <div className="flex gap-3">
                 <p className="shadow rounded w-full flex h-12 items-center align-middle px-4">
-                  {data && data.app_id}
+                  {data?.app_id}
                 </p>
               </div>
             </div>

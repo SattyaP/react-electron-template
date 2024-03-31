@@ -1,13 +1,3 @@
-/* eslint global-require: off, no-console: off, promise/always-return: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
 import {
   app,
@@ -154,11 +144,11 @@ ipcMain.on('get-data-user', (event, args) => {
   event.reply('get-data-user', store.get('data'));
 });
 
-ipcMain.on('logout', async (event, args) => {
+ipcMain.on('logout', (event, args) => {
   store.set('valid', false);
   store.set('data', '');
   event.reply('check-auth', false);
-  handleWindow()
+  handleWindow(false)
 });
 
 let macs = '';
@@ -172,13 +162,14 @@ ipcMain.on('get-mac', (event, args) => {
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    handleWindow();
+    handleWindow(store.get('valid') as boolean);
   }
 });
 
-// TODO: Handle resize to authwindow when logout
-function handleWindow() {
-  if (store.get('valid')) {
+
+// [BUG] => RESIZE WINDOW
+function handleWindow(valid: boolean) {
+  if (valid) {
     mainWindow?.setSize(mainWindowSize[0], mainWindowSize[1]);
     mainWindow?.center();
   } else {
@@ -188,7 +179,7 @@ function handleWindow() {
 }
 
 ipcMain.on('re-session', (event, args) => {
-  // TODO: Handle re-session
+  event.reply('re-session', store.get('data'));
 }); 
 
 app
@@ -201,7 +192,7 @@ app
     }
 
     ipcMain.on('activate-main-apps', (event, args) => {
-      handleWindow()
+      handleWindow(true)
       store.set('data', JSON.stringify(args))
       event.reply('get-data-user');
     });

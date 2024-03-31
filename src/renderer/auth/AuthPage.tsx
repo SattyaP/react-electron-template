@@ -1,30 +1,37 @@
 import { useEffect, useState } from 'react';
-import { AxiosInstance } from './AxiosInstance';
 import '../App.css';
+import ApiModels from '../utils/ApiModels';
 const { ipcRenderer } = window.electron;
 
 // TODO: Handle callback api for validate count user used that license key
 export default function AuthPages() {
   const [licenseKey, setLicenseKey] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [status, setStatus] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await AxiosInstance(licenseKey).post(
-        `lisence/validated?lisence_key=${licenseKey}`,
-      );
+      const firstRequest = await ApiModels.validation(licenseKey) as { success: boolean, message: string, data: any };
       
-      if (!response.data.success) {
-        setError(response.data.message);
+      if (!firstRequest.success) {
+        setError(firstRequest.message); 
+        return setLoading(false);
+      }
+
+      // [BUG] => CALLBACK API 
+      // Details : why it need to restart the app to validate cause when the mac_address on server is already empty it said the license already used but it still update the mac_address even its said the license already used
+      const callBackReq = await ApiModels.callBack(licenseKey, firstRequest.success, firstRequest.data.app_id) as { success: boolean, message: string, data: any}
+      console.log(callBackReq);
+      
+      if (!callBackReq.success) {
+        setError(callBackReq.message);
         return setLoading(false);
       } else {
         setError('');
         ipcRenderer.sendMessage('check-auth', true);
-        ipcRenderer.sendMessage('activate-main-apps', response.data.data);
+        ipcRenderer.sendMessage('activate-main-apps', firstRequest.data);
       }
     } catch (error) {
       setError('An error occurred while validating the license key');
